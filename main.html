@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Therapic Kids | Pediatric Digital Rehabilitation</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f9ff;
+            scroll-behavior: smooth;
+        }
+
+        /* NAVBAR */
+        .custom-navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .custom-navbar .navbar-brand {
+            font-weight: 700;
+            color: #0ea5e9 !important;
+            font-size: 1.5rem;
+        }
+
+        .custom-navbar .nav-link {
+            color: #334155 !important;
+            font-weight: 500;
+            margin: 0 5px;
+            border-radius: 20px;
+            padding: 8px 15px !important;
+            transition: all 0.3s ease;
+        }
+
+        .custom-navbar .nav-link:hover {
+            background: #f0f9ff;
+            color: #0ea5e9 !important;
+            transform: translateY(-2px);
+        }
+
+        .custom-navbar .btn-game {
+            background: #0ea5e9;
+            color: white !important;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+        }
+
+        .custom-navbar .btn-game:hover {
+            background: #0284c7;
+        }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.85), rgba(236, 72, 153, 0.85)), url('https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=1920') center/cover no-repeat fixed;
+            height: 95vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: #f0f9ff;
+            transform: skewY(-2deg);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .btn-start-therapy {
+            background: linear-gradient(45deg, #f59e0b, #f43f5e, #8b5cf6);
+            background-size: 200% 200%;
+            border: none;
+            color: white !important;
+            font-weight: 800;
+            font-size: 1.25rem;
+            padding: 15px 40px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4);
+            transition: all 0.4s ease;
+            animation: gradientShift 3s ease infinite, pulseBtn 2s infinite alternate;
+            display: inline-block;
+        }
+
+        .btn-start-therapy:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(244, 63, 94, 0.6);
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes pulseBtn {
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(1.04);
+            }
+        }
+
+        /* SECTIONS */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-light {
+            background: white;
+        }
+
+        .section-soft {
+            background: #e0f2fe;
+        }
+
+        /* CARDS */
+        .card-soft {
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+            border: none;
+        }
+
+        .card-soft:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        /* STATS */
+        .stat-box {
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.2);
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #0f172a;
+            color: white;
+        }
+
+        .footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .footer a:hover {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            transition: 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: #0ea5e9;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-xl sticky-top custom-navbar">
+        <div class="container">
+
+            <a class="navbar-brand" href="main.html"><i class="fa-solid fa-star text-warning"></i> Therapic Kids</a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <i class="fa-solid fa-bars" style="color:#0ea5e9; font-size:1.5rem;"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-center mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="main.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="privacy.html">Privacy Policy</a></li>
+                    <li class="nav-item"><a class="nav-link" href="terms.html">Terms & Conditions</a></li>
+                    <li class="nav-item ms-lg-2 mb-2 mb-lg-0"><a class="nav-link btn-game text-white px-4 rounded-pill"
+                            href="#" onclick="startGame(event)"><i class="fa-solid fa-gamepad me-1"></i> Game</a></li>
+                </ul>
+
+                <div id="authArea" class="ms-xl-3 d-flex flex-column flex-xl-row gap-2 mt-2 mt-xl-0">
+                    <button class="btn btn-outline-info rounded-pill px-4 fw-bold" data-bs-toggle="modal"
+                        data-bs-target="#loginModal" style="color:#0ea5e9; border-color:#0ea5e9;">Login</button>
+                    <button class="btn btn-info text-white rounded-pill px-4 fw-bold"
+                        style="background:#0ea5e9; border:none;" data-bs-toggle="modal"
+                        data-bs-target="#registerModal">Register</button>
+                </div>
+
+                <div class="dropdown d-none ms-xl-3 mt-2 mt-xl-0" id="userDropdown">
+                    <button class="btn btn-info text-white rounded-pill dropdown-toggle px-4 fw-bold"
+                        style="background:#0ea5e9; border:none;" data-bs-toggle="dropdown"
+                        id="usernameDisplay"></button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:15px;">
+                        <li><a class="dropdown-item py-2" href="dashboard.html"><i
+                                    class="fa-solid fa-chart-line me-2 text-info"></i>Dashboard</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item py-2 text-danger" href="#" onclick="logout()"><i
+                                    class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="display-4 fw-bold mb-3" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.3);">Healing Through Play
+                🎮</h1>
+            <p class="lead fw-bold fs-4">Safe, AI-powered therapy games designed for children under 12.</p>
+            <a href="#" onclick="startGame(event)" class="btn btn-start-therapy mt-4"><i
+                    class="fa-solid fa-rocket me-2"></i> Start Therapy Adventure</a>
+        </div>
+    </section>
+
+    <!-- TRUST -->
+    <section class="section section-light text-center">
+        <div class="container">
+            <h2 class="mb-5">Why Parents Trust Us</h2>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card card-soft p-4">
+                        <h5>👩‍⚕️ Certified Experts</h5>
+                        <p>Programs created by licensed pediatric therapists.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-soft p-4">
+                        <h5>🤖 AI Tracking</h5>
+                        <p>Real-time motion tracking to measure improvement.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-soft p-4">
+                        <h5>🛡️ Data Safety</h5>
+                        <p>No video storage. Child safety comes first.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- THERAPISTS -->
+    <section class="section section-soft text-center">
+        <div class="container">
+            <h2 class="mb-5">Our Specialists 👩‍⚕️</h2>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card card-soft p-4">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" class="rounded-circle mb-3"
+                            width="120">
+                        <h5>Dr. Sarah Johnson</h5>
+                        <p>Pediatric Neuro Specialist</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-soft p-4">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-circle mb-3"
+                            width="120">
+                        <h5>Dr. Alex Carter</h5>
+                        <p>Motor Skill Therapist</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-soft p-4">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="rounded-circle mb-3"
+                            width="120">
+                        <h5>Dr. Emily Roberts</h5>
+                        <p>Balance & Coordination Coach</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="section text-center">
+        <div class="container">
+            <h2 class="mb-5">Our Impact</h2>
+
+            <div class="row g-4" id="statsContainer">
+                <div class="col-md-3">
+                    <div class="stat-box">
+                        <h3><span class="counter" data-target="12543">0</span>+</h3>
+                        <p>Children Helped</p>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="stat-box">
+                        <h3><span class="counter" data-target="98">0</span>%</h3>
+                        <p>Parent Satisfaction</p>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="stat-box">
+                        <h3><span class="counter" data-target="35">0</span>+</h3>
+                        <p>Programs Delivered</p>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="stat-box">
+                        <h3><span class="counter" data-target="15200">0</span>+</h3>
+                        <p>Therapy Hours</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section section-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Frequently Asked Questions</h2>
+
+            <div class="accordion" id="faqAccordion">
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#q1">
+                            Is this safe for my child?
+                        </button>
+                    </h2>
+                    <div id="q1" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            Yes. We do not store video data and all tracking is secure.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q2">
+                            Does this replace physical therapy?
+                        </button>
+                    </h2>
+                    <div id="q2" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            No. It is designed to powerfully complement and support professional therapy between
+                            sessions, but it does not replace the hands-on care of a professional.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q3">
+                            What camera or hardware do I need?
+                        </button>
+                    </h2>
+                    <div id="q3" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            You only need a standard high-quality webcam built into your laptop or desktop and a modern
+                            browser. The AI runs directly on your device processing movements in real-time.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q4">
+                            Is there a way to track the child's progress?
+                        </button>
+                    </h2>
+                    <div id="q4" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            Yes! After secure login, parents gain access to an advanced Dashboard tracking session
+                            accuracy, points achieved, completion times, and a historical breakdown.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q5">
+                            Is the game appropriate for younger kids?
+                        </button>
+                    </h2>
+                    <div id="q5" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            Absolutely. The visuals are completely sensory-friendly, employing calming colors without
+                            harsh flashes. The level of difficulty naturally scales.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer pt-5 pb-4 mt-5">
+        <div class="container">
+            <div class="row text-center text-md-start">
+                <div class="col-md-4 mb-4">
+                    <h4 class="fw-bold mb-3"><i class="fa-solid fa-star text-warning"></i> Therapic Kids</h4>
+                    <p class="text-white-50">AI-Powered Pediatric Rehabilitation Platform designed for effective and
+                        engaging therapy.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="main.html">Home</a></li>
+                        <li class="mb-2"><a href="about.html">About</a></li>
+                        <li class="mb-2"><a href="dashboard.html">Dashboard</a></li>
+                        <li class="mb-2"><a href="privacy.html">Privacy</a></li>
+                        <li class="mb-2"><a href="terms.html">Terms</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4 text-center text-md-start">
+                    <h5 class="fw-bold mb-3">Connect With Us</h5>
+                    <div class="social-icons">
+                        <a href="mailto:kiransiddharth21@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+                        <a href="tel:9544434266"><i class="fa-solid fa-phone"></i></a>
+                        <a href="https://www.instagram.com/kirxnsid_?igsh=bzZnNXJyc3RwdTlp" target="_blank"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-secondary mt-3">
+            <div class="text-center">
+                <p class="mb-0 text-white-50">© 2026 Therapic Kids – AI Powered Pediatric Rehabilitation Platform</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal fade" id="loginModal">
+        <div class="modal-dialog">
+            <div class="modal-content p-4">
+                <h4 class="mb-3">Login</h4>
+
+                <input type="email" id="loginEmail" class="form-control mb-3" placeholder="Registered Email">
+                <div class="input-group mb-3">
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Password">
+                    <button class="btn btn-outline-secondary" type="button"
+                        onclick="var p = document.getElementById('loginPassword'); var i = this.querySelector('i'); if (p.type === 'password') { p.type = 'text'; i.classList.remove('fa-eye'); i.classList.add('fa-eye-slash'); } else { p.type = 'password'; i.classList.remove('fa-eye-slash'); i.classList.add('fa-eye'); }">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+
+                <button class="btn btn-primary w-100" onclick="login()">Login</button>
+
+                <p class="text-danger mt-2" id="loginError"></p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTER MODAL -->
+    <div class="modal fade" id="registerModal">
+        <div class="modal-dialog">
+            <div class="modal-content p-4">
+                <h4 class="mb-3">Parent Registration</h4>
+
+                <input type="text" id="regUsername" class="form-control mb-3" placeholder="Full Name">
+
+                <input type="email" id="regEmail" class="form-control mb-3"
+                    placeholder="Email Address (e.g., mail@gmail.com)">
+
+                <div class="input-group mb-2">
+                    <input type="password" id="regPassword" class="form-control"
+                        placeholder="Create Password (Min 8 chars)">
+                    <button class="btn btn-outline-secondary" type="button"
+                        onclick="var p = document.getElementById('regPassword'); var i = this.querySelector('i'); if (p.type === 'password') { p.type = 'text'; i.classList.remove('fa-eye'); i.classList.add('fa-eye-slash'); } else { p.type = 'password'; i.classList.remove('fa-eye-slash'); i.classList.add('fa-eye'); }">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+
+                <div class="progress mb-2" style="height: 5px; background-color: #e2e8f0;">
+                    <div id="passwordStrengthBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                </div>
+                <small id="passwordStrengthText" class="d-block mb-3 fw-bold"></small>
+
+                <label class="mb-2">Date of Birth</label>
+                <input type="date" id="regDOB" class="form-control mb-3">
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="termsCheck"
+                        onchange="document.getElementById('registerBtn').disabled = !this.checked">
+                    <label class="form-check-label">
+                        I accept the <a href="terms.html" target="_blank">Terms & Conditions</a>
+                    </label>
+                </div>
+
+                <button class="btn btn-success w-100" id="registerBtn" onclick="register()" disabled>Register</button>
+
+                <p class="text-danger mt-2" id="registerError"></p>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        import { db, collection, addDoc, getDocs, query, where, updateDoc, doc, serverTimestamp } from "./firebase-config.js";
+
+        function calculateAge(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+            return age;
+        }
+
+        window.register = async function () {
+            const username = document.getElementById("regUsername").value.trim();
+            const email = document.getElementById("regEmail").value.trim().toLowerCase();
+            const password = document.getElementById("regPassword").value.trim();
+            const dob = document.getElementById("regDOB").value;
+            const termsAccepted = document.getElementById("termsCheck").checked;
+            const errorBox = document.getElementById("registerError");
+
+            errorBox.innerText = "";
+            const registerBtn = document.getElementById("registerBtn");
+            registerBtn.innerText = "Registering...";
+            registerBtn.disabled = true;
+
+            if (!username || !email || !password || !dob) {
+                errorBox.innerText = "Please fill all fields.";
+                registerBtn.innerText = "Register";
+                registerBtn.disabled = false;
+                return;
+            }
+
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/i;
+            if (!emailRegex.test(email)) {
+                errorBox.innerText = "Invalid email format. Please use a @gmail.com address.";
+                registerBtn.innerText = "Register";
+                registerBtn.disabled = false;
+                return;
+            }
+
+            if (password.length < 8) {
+                errorBox.innerText = "Password must be at least 8 characters long.";
+                registerBtn.innerText = "Register";
+                registerBtn.disabled = false;
+                return;
+            }
+
+            const age = calculateAge(dob);
+            if (age < 25) {
+                errorBox.innerText = "Only parents (25+) can register.";
+                registerBtn.innerText = "Register";
+                registerBtn.disabled = false;
+                return;
+            }
+
+            try {
+                const usersRef = collection(db, "users");
+                const q = query(usersRef, where("email", "==", email));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    errorBox.innerText = "This email is already in use. Please login.";
+                    registerBtn.innerText = "Register";
+                    registerBtn.disabled = false;
+                    return;
+                }
+
+                await addDoc(usersRef, {
+                    username: username,
+                    email: email,
+                    password: password,
+                    dob: dob,
+                    status: "active",
+                    registeredAt: serverTimestamp(),
+                    lastLogin: null
+                });
+
+                document.getElementById("regUsername").value = "";
+                document.getElementById("regEmail").value = "";
+                document.getElementById("regPassword").value = "";
+                document.getElementById("regDOB").value = "";
+                document.getElementById("termsCheck").checked = false;
+
+                const regModal = bootstrap.Modal.getOrCreateInstance(document.getElementById("registerModal"));
+                regModal.hide();
+
+                const logModal = bootstrap.Modal.getOrCreateInstance(document.getElementById("loginModal"));
+                logModal.show();
+
+                alert("Registration successful. Please login.");
+
+            } catch (err) {
+                errorBox.innerText = "Error connecting to server. Check Firebase configuration.";
+                console.error("Firebase Auth Error:", err);
+            } finally {
+                registerBtn.innerText = "Register";
+                if (!document.getElementById("termsCheck").checked) {
+                    registerBtn.disabled = true;
+                } else {
+                    registerBtn.disabled = false;
+                }
+            }
+        };
+
+        window.login = async function () {
+            const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+            const password = document.getElementById("loginPassword").value.trim();
+            const errorBox = document.getElementById("loginError");
+
+            errorBox.innerText = "";
+            const loginBtn = document.querySelector("#loginModal .btn-primary");
+            loginBtn.innerText = "Logging in...";
+
+            try {
+                const usersRef = collection(db, "users");
+                const q = query(usersRef, where("email", "==", email), where("password", "==", password));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    errorBox.innerText = "Invalid email or password.";
+                    loginBtn.innerText = "Login";
+                    return;
+                }
+
+                const userDoc = querySnapshot.docs[0];
+                const userData = userDoc.data();
+
+                if (userData.status === "suspended") {
+                    errorBox.innerText = "Access Denied: Account suspended by Admin (Kiran).";
+                    loginBtn.innerText = "Login";
+                    return;
+                }
+
+                // Update last login time
+                await updateDoc(doc(db, "users", userDoc.id), {
+                    lastLogin: serverTimestamp()
+                });
+
+                localStorage.setItem("loggedInUser", JSON.stringify({ id: userDoc.id, ...userData }));
+                localStorage.setItem("loggedIn", "true");
+
+                location.reload();
+            } catch (err) {
+                errorBox.innerText = "Server Error. Check config.";
+                loginBtn.innerText = "Login";
+                console.error(err);
+            }
+        };
+
+        window.logout = function () {
+            localStorage.removeItem("loggedIn");
+            localStorage.removeItem("loggedInUser");
+            location.reload();
+        };
+
+        window.startGame = function (e) {
+            e.preventDefault();
+            if (localStorage.getItem("loggedIn") === "true") {
+                window.location.href = "pacman5.html";
+            } else {
+                let errorBox = document.getElementById("loginError");
+                errorBox.innerText = "⭐ Please login to start the therapy game! ⭐";
+                errorBox.classList.add("fw-bold", "text-center", "fs-5");
+                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
+            }
+        };
+
+        window.onload = function () {
+            if (localStorage.getItem("loggedIn") === "true") {
+                const user = JSON.parse(localStorage.getItem("loggedInUser"));
+                document.getElementById("authArea").classList.add("d-none");
+                document.getElementById("userDropdown").classList.remove("d-none");
+                document.getElementById("usernameDisplay").innerText = user.username;
+            } else {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('loginRequired') === 'true') {
+                    let errorBox = document.getElementById("loginError");
+                    errorBox.innerText = "⭐ Please login to start the therapy game! ⭐";
+                    errorBox.classList.add("fw-bold", "text-center", "fs-5");
+                    setTimeout(() => {
+                        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                        loginModal.show();
+                    }, 500);
+                }
+            }
+        }
+
+        // Password Strength Logic
+        document.getElementById("regPassword").addEventListener("input", function () {
+            let val = this.value;
+            let bar = document.getElementById("passwordStrengthBar");
+            let text = document.getElementById("passwordStrengthText");
+            let strength = 0;
+
+            if (val.length >= 8) strength += 25;
+            if (val.match(/[A-Z]/)) strength += 25;
+            if (val.match(/[0-9]/)) strength += 25;
+            if (val.match(/[^a-zA-Z0-9]/)) strength += 25;
+
+            bar.style.width = strength + "%";
+
+            if (val.length === 0) {
+                bar.style.width = "0%";
+                text.innerText = "";
+            } else if (strength <= 25) {
+                bar.className = "progress-bar bg-danger"; text.innerText = "Strength: Weak"; text.className = "text-danger d-block mb-3 fw-bold";
+            } else if (strength <= 50) {
+                bar.className = "progress-bar bg-warning"; text.innerText = "Strength: Fair"; text.className = "text-warning d-block mb-3 fw-bold";
+            } else if (strength <= 75) {
+                bar.className = "progress-bar bg-info"; text.innerText = "Strength: Good"; text.className = "text-info d-block mb-3 fw-bold";
+            } else {
+                bar.className = "progress-bar bg-success"; text.innerText = "Strength: Strong"; text.className = "text-success d-block mb-3 fw-bold";
+            }
+        });
+
+
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentUrl = window.location.pathname.split('/').pop() || "main.html";
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentUrl) {
+                    link.style.borderBottom = "3px solid #0ea5e9";
+                    link.style.color = "#0ea5e9";
+                    link.style.fontWeight = "bold";
+                }
+            });
+
+            // Live Stat Counting Intersector
+            const counters = document.querySelectorAll('.counter');
+            const speed = 150;
+
+            const animateCounters = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = +counter.getAttribute('data-target');
+
+                        const updateCount = () => {
+                            const count = +counter.innerText.replace(/,/g, '');
+                            const inc = target / speed;
+                            if (count < target) {
+                                counter.innerText = Math.ceil(count + inc).toLocaleString();
+                                setTimeout(updateCount, 15);
+                            } else {
+                                counter.innerText = target.toLocaleString();
+                            }
+                        };
+                        updateCount();
+                        observer.unobserve(counter);
+                    }
+                });
+            };
+
+            const obs = new IntersectionObserver(animateCounters, { threshold: 0.5 });
+            counters.forEach(c => obs.observe(c));
+        });
+    </script>
+</body>
+
+</html>

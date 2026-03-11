@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Therapic Adventure Maze</title>
+    <style>
+        /* Sensory-friendly, calming colors */
+        body {
+            background-color: #F4F1DE;
+            /* Warm, soft cream */
+            color: #3D405B;
+            font-family: 'Comic Sans MS', 'Fredoka One', 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+            color: #E07A5F;
+            letter-spacing: 2px;
+            font-size: 2.2rem;
+        }
+
+        #game-container {
+            position: relative;
+            background: #3D405B;
+            /* Soft dark slate for the game board */
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        canvas {
+            background-color: #3D405B;
+            border-radius: 8px;
+            display: block;
+        }
+
+        #webcam {
+            display: none;
+        }
+
+        /* Camera feed hidden for kid's focus */
+
+        #dashboard {
+            display: flex;
+            justify-content: space-between;
+            width: 448px;
+            margin-bottom: 15px;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #81B29A;
+        }
+
+        .ai-indicator {
+            width: 15px;
+            height: 15px;
+            background-color: #E07A5F;
+            border-radius: 50%;
+        }
+
+        .active-tracking {
+            background-color: #81B29A;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                opacity: 0.7;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        #gesture-icon {
+            font-size: 1.8rem;
+        }
+
+        .hud-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #score-display {
+            color: #F2CC8F;
+            font-size: 1.3rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        #quit-btn {
+            background-color: #E07A5F;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #C2634B;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        #quit-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #C2634B;
+        }
+
+        /* --- TUTORIAL OVERLAY --- */
+        #tutorial-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(61, 64, 91, 0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .tutorial-card {
+            background: #F4F1DE;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 650px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border: 4px solid #E07A5F;
+        }
+
+        .tutorial-card h2 {
+            color: #E07A5F;
+            font-size: 2.5rem;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .tutorial-card .subtitle {
+            color: #3D405B;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .gesture-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .gesture-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 3px solid #E2E8F0;
+        }
+
+        .gesture-item .emoji {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .gesture-item strong {
+            color: #E07A5F;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .gesture-item span {
+            background: #81B29A;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        #start-therapy-btn {
+            background: #06D6A0;
+            color: white;
+            font-family: inherit;
+            font-size: 1.5rem;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #04A87C;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        #start-therapy-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #04A87C;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        // Protect game page
+        if (localStorage.getItem("loggedIn") !== "true") {
+            window.location.href = "main.html?loginRequired=true";
+        }
+    </script>
+
+    <h1>✨ HAND HERO ADVENTURE ✨</h1>
+
+    <!-- TUTORIAL OVERLAY -->
+    <div id="tutorial-overlay">
+        <div class="tutorial-card">
+            <h2>👋 Welcome to Hand Hero!</h2>
+            <p class="subtitle">Look at the camera & use your fingers to guide your player to the glowing green exit!
+            </p>
+
+            <div class="gesture-grid">
+                <div class="gesture-item">
+                    <span class="emoji">👆</span>
+                    <strong>1 Finger</strong>
+                    <span>MOVE UP</span>
+                </div>
+                <div class="gesture-item">
+                    <span class="emoji">✌️</span>
+                    <strong>2 Fingers</strong>
+                    <span>MOVE DOWN</span>
+                </div>
+                <div class="gesture-item">
+                    <span class="emoji">🤟</span>
+                    <strong>3 Fingers</strong>
+                    <span>MOVE LEFT</span>
+                </div>
+                <div class="gesture-item">
+                    <span class="emoji">👉</span>
+                    <strong>4 Fingers</strong>
+                    <span>MOVE RIGHT</span>
+                </div>
+                <div class="gesture-item">
+                    <span class="emoji">🖐️</span>
+                    <strong>5 Fingers</strong>
+                    <span>STOP NOW</span>
+                </div>
+                <div class="gesture-item">
+                    <span class="emoji">✊</span>
+                    <strong>Fist</strong>
+                    <span>REST / NONE</span>
+                </div>
+            </div>
+
+            <button id="start-therapy-btn">Start Session! 🚀</button>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <div class="ai-status">
+            <div id="ai-light" class="ai-indicator"></div>
+            <span id="status-text">Warming up camera...</span>
+            <span id="gesture-icon">⏳</span>
+        </div>
+        <div class="hud-right">
+            <div id="score-display">SCORE: 0</div>
+            <button id="quit-btn">QUIT</button>
+        </div>
+    </div>
+
+    <div id="game-container">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="gameCanvas" width="448" height="496"></canvas>
+    </div>
+
+    <script type="module">
+        import {
+            FilesetResolver,
+            HandLandmarker
+        } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
+        import { db, collection, addDoc, serverTimestamp } from "./firebase-config.js";
+
+        // --- GLOBAL VARIABLES & AI SETUP ---
+        let handLandmarker = undefined;
+        let lastVideoTime = -1;
+        let results = undefined;
+        let currentGesture = "NONE";
+
+        const video = document.getElementById("webcam");
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("status-text");
+        const aiLight = document.getElementById("ai-light");
+        const gestureIcon = document.getElementById("gesture-icon");
+        const scoreDisplay = document.getElementById("score-display");
+        const quitBtn = document.getElementById("quit-btn");
+
+        const createHandLandmarker = async () => {
+            const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
+            handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                baseOptions: { modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`, delegate: "GPU" },
+                runningMode: "VIDEO", numHands: 1
+            });
+            navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+                video.srcObject = stream;
+                video.addEventListener("loadeddata", predictWebcam);
+                statusText.innerText = "Tracking Active";
+                aiLight.classList.add("active-tracking");
+            });
+        };
+
+        const predictWebcam = async () => {
+            if (video.currentTime !== lastVideoTime) {
+                lastVideoTime = video.currentTime;
+                results = handLandmarker.detectForVideo(video, performance.now());
+            }
+            if (results.landmarks && results.landmarks.length > 0) {
+                mapGesture(countFingers(results.landmarks[0]));
+            }
+            window.requestAnimationFrame(predictWebcam);
+        };
+
+        function countFingers(landmarks) {
+            let count = 0;
+            // Check thumb distance from palm to see if it's extended
+            let thumbTipDist = Math.hypot(landmarks[4].x - landmarks[5].x, landmarks[4].y - landmarks[5].y);
+            let thumbBaseDist = Math.hypot(landmarks[3].x - landmarks[5].x, landmarks[3].y - landmarks[5].y);
+            if (thumbTipDist > thumbBaseDist * 1.2) count++;
+
+            // Check other four fingers
+            if (landmarks[8].y < landmarks[6].y) count++;
+            if (landmarks[12].y < landmarks[10].y) count++;
+            if (landmarks[16].y < landmarks[14].y) count++;
+            if (landmarks[20].y < landmarks[18].y) count++;
+
+            return count;
+        }
+
+        function mapGesture(count) {
+            totalGestures++;
+            if (count === 1) { currentGesture = "UP"; gestureIcon.innerText = "👆"; validGestures++; directionsCount.UP++; }
+            else if (count === 2) { currentGesture = "DOWN"; gestureIcon.innerText = "✌️"; validGestures++; directionsCount.DOWN++; }
+            else if (count === 3) { currentGesture = "LEFT"; gestureIcon.innerText = "🤟"; validGestures++; directionsCount.LEFT++; }
+            else if (count === 4) { currentGesture = "RIGHT"; gestureIcon.innerText = "👉"; validGestures++; directionsCount.RIGHT++; }
+            else if (count === 5) { currentGesture = "STOP"; gestureIcon.innerText = "🖐️"; validGestures++; }
+            else { currentGesture = "NONE"; gestureIcon.innerText = "✊"; }
+        }
+
+        // --- GAME LOGIC & LEVEL DESIGN ---
+        const TILE_SIZE = 32;
+        const ROWS = 15, COLS = 14;
+
+        let gameState = "PLAYING";
+        let currentLevelIndex = 0;
+        let totalScore = 0;
+        let levelScore = 0;
+
+        // Stats tracking
+        let gameStartTime = Date.now();
+        let totalGestures = 0;
+        let validGestures = 0;
+        let directionsCount = { UP: 0, DOWN: 0, LEFT: 0, RIGHT: 0 };
+        let particles = [];
+        let winningScale = 0;
+
+
+        // Tile Legend: 0=Dot, 1=Wall, 2=Empty space, 3=EXIT DOOR
+        const levelDesigns = [
+            // LEVEL 1: Simple, Exit at Top Right
+            [
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 3, 1],
+                [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1],
+                [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1],
+                [1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1],
+                [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+                [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+            ],
+            // LEVEL 2: Winding, Exit at Top Left
+            [
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1],
+                [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
+                [1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+                [1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
+                [1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1],
+                [1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+                [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+            ],
+            // LEVEL 3: Complex loop, Exit at bottom middle
+            [
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+                [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+                [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+                [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+                [1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1],
+                [1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1],
+                [1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+            ]
+        ];
+
+        // Start locations for each level (row, col)
+        const startPositions = [
+            { r: 13, c: 1 },
+            { r: 13, c: 12 },
+            { r: 1, c: 1 }
+        ];
+
+        let currentMap = [];
+
+        // CRITICAL FIX: Speed must perfectly divide TILE_SIZE (32). So 2, 4, or 8.
+        const player = { x: 0, y: 0, dir: { x: 0, y: 0 }, speed: 2 };
+
+        function loadLevel(index) {
+            currentMap = levelDesigns[index].map(row => [...row]);
+            player.x = startPositions[index].c * TILE_SIZE + TILE_SIZE / 2;
+            player.y = startPositions[index].r * TILE_SIZE + TILE_SIZE / 2;
+            player.dir = { x: 0, y: 0 };
+            levelScore = 0;
+            gameState = "PLAYING";
+        }
+
+        // Initialize First Level
+        loadLevel(currentLevelIndex);
+        gameState = "TUTORIAL"; // Override playing state immediately
+
+        document.getElementById("start-therapy-btn").addEventListener("click", () => {
+            document.getElementById("tutorial-overlay").style.display = "none";
+
+            // Wait to start camera until they acknowledge instructions
+            statusText.innerText = "Warming up camera...";
+            createHandLandmarker();
+
+            gameState = "PLAYING";
+            gameStartTime = Date.now(); // Reset stats timer officially
+        });
+
+        quitBtn.addEventListener("click", () => {
+            gameState = "QUIT";
+        });
+
+        function gameLoop() {
+            if (gameState === "PLAYING") update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function update() {
+            // 1. Get intended gesture direction
+            let intendedDir = { x: 0, y: 0 };
+            if (currentGesture === "UP") intendedDir = { x: 0, y: -1 };
+            else if (currentGesture === "DOWN") intendedDir = { x: 0, y: 1 };
+            else if (currentGesture === "LEFT") intendedDir = { x: -1, y: 0 };
+            else if (currentGesture === "RIGHT") intendedDir = { x: 1, y: 0 };
+            else if (currentGesture === "STOP" || currentGesture === "NONE") intendedDir = { x: 0, y: 0 };
+
+            // 2. Check if the player is perfectly centered on a 32px tile
+            let isCenteredX = (player.x % TILE_SIZE === TILE_SIZE / 2);
+            let isCenteredY = (player.y % TILE_SIZE === TILE_SIZE / 2);
+
+            // 3. ONLY change directions or stop when perfectly centered
+            if (isCenteredX && isCenteredY) {
+                if (intendedDir.x === 0 && intendedDir.y === 0) {
+                    player.dir = { x: 0, y: 0 }; // Brake applied
+                } else {
+                    let pCol = Math.floor(player.x / TILE_SIZE);
+                    let pRow = Math.floor(player.y / TILE_SIZE);
+
+                    let nC = pCol + intendedDir.x;
+                    let nR = pRow + intendedDir.y;
+
+                    // Prevent looking out of bounds, and check for walls
+                    if (currentMap[nR] !== undefined && currentMap[nR][nC] !== 1) {
+                        player.dir = intendedDir; // Path is open, move!
+                    } else {
+                        player.dir = { x: 0, y: 0 }; // Wall hit, stop!
+                    }
+                }
+            }
+
+            // 4. Move the player
+            player.x += player.dir.x * player.speed;
+            player.y += player.dir.y * player.speed;
+
+            // --- MAP INTERACTIONS (Dots and Doors) ---
+            let pCol = Math.floor(player.x / TILE_SIZE);
+            let pRow = Math.floor(player.y / TILE_SIZE);
+
+            // Eat Dots
+            if (currentMap[pRow][pCol] === 0) {
+                currentMap[pRow][pCol] = 2; // Make empty
+                levelScore += 10;
+                totalScore += 10;
+                scoreDisplay.innerText = "SCORE: " + totalScore;
+            }
+
+            // Hit the Exit Door!
+            if (currentMap[pRow][pCol] === 3) {
+                player.dir = { x: 0, y: 0 }; // Stop player instantly
+                if (currentLevelIndex < levelDesigns.length - 1) {
+                    gameState = "LEVEL_COMPLETE";
+                    particles = [];
+                    winningScale = 0;
+                    // Generate explosion particles
+                    for (let i = 0; i < 150; i++) {
+                        particles.push({
+                            x: canvas.width / 2,
+                            y: canvas.height / 2,
+                            vx: (Math.random() - 0.5) * 16,
+                            vy: (Math.random() - 0.5) * 16 - 2,
+                            size: Math.random() * 6 + 3,
+                            color: `hsl(${Math.random() * 360}, 100%, 65%)`,
+                            life: 1.0,
+                            rotation: Math.random() * 360,
+                            rotSpeed: (Math.random() - 0.5) * 10
+                        });
+                    }
+                    // Wait 4 seconds, then load next level
+                    setTimeout(() => {
+                        currentLevelIndex++;
+                        loadLevel(currentLevelIndex);
+                    }, 4000);
+                } else {
+                    finishGame();
+                }
+            }
+        }
+
+        async function finishGame() {
+            gameState = "VICTORY";
+            let timeSpent = Math.floor((Date.now() - gameStartTime) / 1000);
+            let accuracy = totalGestures > 0 ? Math.round((validGestures / totalGestures) * 100) : 0;
+
+            // If all zero, default to NONE
+            let sumDirs = Object.values(directionsCount).reduce((a, b) => a + b, 0);
+            let mostUsedDir = sumDirs > 0
+                ? Object.keys(directionsCount).reduce((a, b) => directionsCount[a] > directionsCount[b] ? a : b)
+                : "NONE";
+
+            window.finalTimeSpent = timeSpent;
+            window.finalAccuracy = accuracy;
+            window.finalMostUsedDir = mostUsedDir;
+
+            localStorage.setItem("lastGameTime", timeSpent);
+            localStorage.setItem("lastScore", totalScore);
+            localStorage.setItem("lastAccuracy", accuracy);
+            localStorage.setItem("mostUsedDir", mostUsedDir);
+
+            try {
+                const user = JSON.parse(localStorage.getItem("loggedInUser"));
+                if (user && user.id) {
+                    await addDoc(collection(db, "scores"), {
+                        userId: user.id,
+                        score: totalScore,
+                        timeSpent: timeSpent,
+                        accuracy: accuracy,
+                        mostUsedDirection: mostUsedDir,
+                        playedAt: serverTimestamp()
+                    });
+                }
+            } catch (err) {
+                console.error("Error saving score to Firebase", err);
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = "#3D405B"; // Background
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Map
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (currentMap[r][c] === 1) {
+                        ctx.fillStyle = "#81B29A"; // Soft calming green/teal for walls
+                        ctx.beginPath();
+                        ctx.roundRect(c * TILE_SIZE + 2, r * TILE_SIZE + 2, TILE_SIZE - 4, TILE_SIZE - 4, 8);
+                        ctx.fill();
+                    } else if (currentMap[r][c] === 0) {
+                        ctx.fillStyle = "#F2CC8F"; // Soft yellow dots
+                        ctx.beginPath();
+                        ctx.arc(c * TILE_SIZE + TILE_SIZE / 2, r * TILE_SIZE + TILE_SIZE / 2, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (currentMap[r][c] === 3) {
+                        // EXIT DOOR DRAWING
+                        ctx.fillStyle = "#06D6A0"; // Bright glowing green for the exit portal
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = "#06D6A0";
+                        ctx.beginPath();
+                        ctx.moveTo(c * TILE_SIZE + 4, r * TILE_SIZE + TILE_SIZE);
+                        ctx.lineTo(c * TILE_SIZE + 4, r * TILE_SIZE + 10);
+                        ctx.arc(c * TILE_SIZE + TILE_SIZE / 2, r * TILE_SIZE + 10, TILE_SIZE / 2 - 4, Math.PI, 0);
+                        ctx.lineTo(c * TILE_SIZE + TILE_SIZE - 4, r * TILE_SIZE + TILE_SIZE);
+                        ctx.fill();
+                        ctx.shadowBlur = 0; // Reset shadow
+                    }
+                }
+            }
+
+            // Draw Player
+            if (gameState !== "QUIT") {
+                ctx.fillStyle = "#E07A5F"; // Soft warm orange for character
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, 13, 0, Math.PI * 2);
+                ctx.fill();
+                // Little face on player
+                ctx.fillStyle = "#3D405B";
+                ctx.beginPath();
+                ctx.arc(player.x - 4, player.y - 3, 2, 0, Math.PI * 2);
+                ctx.arc(player.x + 4, player.y - 3, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // UI OVERLAYS
+            if (gameState === "LEVEL_COMPLETE") {
+                ctx.fillStyle = "rgba(61, 64, 91, 0.85)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+                // Update and draw confetti particles
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.3; // gravity
+                    p.life -= 0.008;
+                    p.rotation += p.rotSpeed;
+                    if (p.life > 0) {
+                        ctx.save();
+                        ctx.globalAlpha = p.life;
+                        ctx.translate(p.x, p.y);
+                        ctx.rotate(p.rotation * Math.PI / 180);
+                        ctx.fillStyle = p.color;
+                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                        ctx.restore();
+                    }
+                });
+
+                winningScale = Math.min(winningScale + 0.05, 1);
+
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height / 2 - 40);
+                ctx.scale(1 + Math.sin(Date.now() / 150) * 0.05, 1 + Math.sin(Date.now() / 150) * 0.05);
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#F2CC8F";
+                ctx.shadowColor = "#E07A5F";
+                ctx.shadowBlur = 15;
+                ctx.font = "bold 45px 'Fredoka One', 'Comic Sans MS', sans-serif";
+                ctx.fillText("LEVEL CLEARED! 🎉", 0, 0);
+                ctx.restore();
+
+                ctx.fillStyle = "#81B29A";
+                ctx.font = "bold 25px sans-serif";
+                ctx.fillText(`Bonus Points Collected: ${levelScore}`, canvas.width / 2, canvas.height / 2 + 10);
+
+                ctx.fillStyle = "#FFF";
+                ctx.font = "18px sans-serif";
+                ctx.fillText("Moving to next area...", canvas.width / 2, canvas.height / 2 + 60);
+            }
+            else if (gameState === "VICTORY") {
+                ctx.fillStyle = "rgba(61, 64, 91, 0.9)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#06D6A0";
+                ctx.font = "bold 45px 'Comic Sans MS', sans-serif";
+                ctx.fillText("YOU WON! 🏆", canvas.width / 2, canvas.height / 2 - 90);
+
+                ctx.fillStyle = "#F2CC8F";
+                ctx.font = "bold 20px sans-serif";
+                ctx.fillText(`Total Adventure Score: ${totalScore}`, canvas.width / 2, canvas.height / 2 - 40);
+
+                ctx.fillStyle = "#FFF";
+                ctx.font = "16px sans-serif";
+                ctx.fillText(`⏳ Time Spent: ${window.finalTimeSpent || 0} seconds`, canvas.width / 2, canvas.height / 2 + 10);
+                ctx.fillText(`🎯 Tracking Accuracy: ${window.finalAccuracy || 0}%`, canvas.width / 2, canvas.height / 2 + 40);
+                ctx.fillText(`🎮 Most Used Move: ${window.finalMostUsedDir || "N/A"}`, canvas.width / 2, canvas.height / 2 + 70);
+
+                // Add button to go back to dashboard
+                ctx.fillStyle = "#E07A5F";
+                ctx.beginPath();
+                ctx.roundRect(canvas.width / 2 - 100, canvas.height / 2 + 110, 200, 40, 10);
+                ctx.fill();
+                ctx.fillStyle = "#FFF";
+                ctx.font = "bold 16px sans-serif";
+                ctx.fillText("RETURN HOME", canvas.width / 2, canvas.height / 2 + 135);
+
+                canvas.onclick = (e) => {
+                    let rect = canvas.getBoundingClientRect();
+                    let clickX = e.clientX - rect.left;
+                    let clickY = e.clientY - rect.top;
+                    if (clickX >= canvas.width / 2 - 100 && clickX <= canvas.width / 2 + 100 &&
+                        clickY >= canvas.height / 2 + 110 && clickY <= canvas.height / 2 + 150) {
+                        window.location.href = "dashboard.html";
+                    }
+                };
+            }
+            else if (gameState === "QUIT") {
+                ctx.fillStyle = "rgba(61, 64, 91, 0.9)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#E07A5F";
+                ctx.font = "bold 35px 'Comic Sans MS', sans-serif";
+                ctx.fillText("THERAPY PAUSED", canvas.width / 2, canvas.height / 2 - 20);
+
+                ctx.fillStyle = "#FFF";
+                ctx.font = "20px sans-serif";
+                ctx.fillText("Great job today! Rest your hands.", canvas.width / 2, canvas.height / 2 + 30);
+            }
+        }
+
+        gameLoop();
+    </script>
+</body>
+
+</html>

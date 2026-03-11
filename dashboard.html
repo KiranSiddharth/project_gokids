@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard | Therapic Kids</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        body {
+            background: #f0f9ff;
+            color: #1e293b;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: #ffffff;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
+            padding: 30px 20px;
+            z-index: 100;
+        }
+
+        .sidebar h4 {
+            font-weight: 800;
+            margin-bottom: 40px;
+            color: #0ea5e9;
+            font-size: 1.6rem;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: #475569;
+            padding: 14px 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            margin-bottom: 12px;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .sidebar a i {
+            width: 25px;
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+            background: #f0f9ff;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .topbar h2 {
+            color: #0f172a;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .card-medical {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            border: none;
+            transition: 0.3s;
+            height: 100%;
+        }
+
+        .card-medical:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+            border-color: #bae6fd;
+        }
+
+        .stat-card .icon-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            margin: 10px 0 0;
+            color: #0f172a;
+            font-weight: 800;
+        }
+
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h4><i class="fa-solid fa-star text-warning"></i> Therapic</h4>
+        <a href="main.html"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="pacman5.html"><i class="fa-solid fa-gamepad"></i> Therapy Game</a>
+        <a href="about.html"><i class="fa-solid fa-circle-info"></i> About Us</a>
+        <a href="#" onclick="logout()" class="text-danger mt-5"><i class="fa-solid fa-right-from-bracket"></i>
+            Logout</a>
+    </div>
+
+    <div class="main">
+
+        <div class="topbar">
+            <h2>Therapy Dashboard</h2>
+            <div class="d-flex align-items-center">
+                <div class="me-3 text-end d-none d-md-block">
+                    <span class="d-block text-secondary small">Logged in as</span>
+                    <strong id="userNameDisplay" class="text-dark"></strong>
+                </div>
+                <div class="profile-avatar" style="width:45px; height:45px; font-size:20px;" id="topbarAvatarLetter">
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Profile overview -->
+            <div class="col-md-4">
+                <div class="card-medical text-center">
+                    <div class="profile-avatar mx-auto mb-3" id="avatarLetter"></div>
+                    <h4 id="profileName" class="fw-bold text-dark"></h4>
+                    <p id="profileEmail" class="text-secondary mb-1"></p>
+                    <p class="badge bg-info text-dark px-3 py-2 rounded-pill mt-2" id="profileAge"></p>
+
+                    <div class="mt-4 pt-3 border-top">
+                        <a href="pacman5.html" class="btn btn-primary w-100 rounded-pill fw-bold py-2 shadow-sm"
+                            style="background:#0ea5e9; border:none;">
+                            <i class="fa-solid fa-play me-2"></i> Start Session
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modules -->
+            <div class="col-md-8">
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="icon-circle bg-info text-white shadow-sm"
+                                style="background: linear-gradient(135deg, #0ea5e9, #38bdf8) !important;">
+                                <i class="fa-solid fa-chart-bar"></i>
+                            </div>
+                            <p class="text-secondary mb-1">Therapy Progress</p>
+                            <h3 id="sessions">0</h3>
+                            <span class="badge bg-success mt-2 rounded-pill px-3"><i class="fa-solid fa-arrow-up"></i>
+                                On Track</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="icon-circle bg-warning text-white shadow-sm"
+                                style="background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;">
+                                <i class="fa-solid fa-gamepad"></i>
+                            </div>
+                            <p class="text-secondary mb-1">Game Activity Score</p>
+                            <h3 id="highScore">0</h3>
+                            <span class="text-secondary small mt-2 d-block">Highest score achieved</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="icon-circle text-white shadow-sm"
+                                style="background: linear-gradient(135deg, #10b981, #34d399) !important;">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <p class="text-secondary mb-1">Tracking Accuracy (Last Game)</p>
+                            <h3 id="accuracyVal">0%</h3>
+                            <span class="text-secondary small mt-2 d-block">Based on successful gestures</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="icon-circle text-white shadow-sm"
+                                style="background: linear-gradient(135deg, #8b5cf6, #a78bfa) !important;">
+                                <i class="fa-solid fa-hands"></i>
+                            </div>
+                            <p class="text-secondary mb-1">Most Used Move (Last Game)</p>
+                            <h3 id="mostUsedMoveVal">N/A</h3>
+                            <span class="text-secondary small mt-2 d-block">Direction preferred by child</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card-medical p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="icon-circle bg-primary text-white d-flex align-items-center justify-content-center rounded-circle shadow-sm me-3"
+                                    style="width:40px; height:40px; background:linear-gradient(135deg, #8b5cf6, #a78bfa) !important;">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-0">AI Insights</h5>
+                            </div>
+                            <p class="text-secondary small">Your child has shown a <strong class="text-success">12%
+                                    improvement</strong> in hand-eye coordination over the last 3 sessions. Consistent
+                                performance on reach exercises.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card-medical p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="icon-circle bg-danger text-white d-flex align-items-center justify-content-center rounded-circle shadow-sm me-3"
+                                    style="width:40px; height:40px; background:linear-gradient(135deg, #ef4444, #f87171) !important;">
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-0">Session History</h5>
+                            </div>
+                            <ul class="list-unstyled mb-0 text-secondary small">
+                                <li class="mb-2 pb-2 border-bottom d-flex justify-content-between"><span>Today</span>
+                                    <span class="text-success"><i class="fa-solid fa-check-circle"></i> Completed</span>
+                                </li>
+                                <li class="mb-2 pb-2 border-bottom d-flex justify-content-between"><span>2 Days
+                                        Ago</span> <span class="text-success"><i class="fa-solid fa-check-circle"></i>
+                                        Completed</span></li>
+                                <li class="d-flex justify-content-between"><span>5 Days Ago</span> <span
+                                        class="text-success"><i class="fa-solid fa-check-circle"></i> Completed</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { db, collection, query, where, getDocs, doc } from "./firebase-config.js";
+
+        if (localStorage.getItem("loggedIn") !== "true") {
+            window.location.href = "main.html";
+        }
+
+        const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+        if (!user) {
+            window.location.href = "main.html";
+        }
+
+        document.getElementById("userNameDisplay").innerText = user.username;
+        document.getElementById("profileName").innerText = user.username;
+        document.getElementById("profileEmail").innerText = user.email;
+
+        function calculateAge(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+            return age;
+        }
+
+        document.getElementById("profileAge").innerText = "Age: " + (user.dob ? calculateAge(user.dob) : "N/A");
+
+        document.getElementById("avatarLetter").innerText = user.username.charAt(0).toUpperCase();
+        document.getElementById("topbarAvatarLetter").innerText = user.username.charAt(0).toUpperCase();
+
+        // Fetch scores from Firebase
+        async function fetchUserStats() {
+            try {
+                const scoresRef = collection(db, "scores");
+                const q = query(scoresRef, where("userId", "==", user.id));
+                const querySnapshot = await getDocs(q);
+
+                let highScore = 0;
+                let sessions = querySnapshot.size;
+                let lastAccuracy = 0;
+                let mostUsedDir = "N/A";
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.score > highScore) {
+                        highScore = data.score;
+                    }
+                    lastAccuracy = data.accuracy || lastAccuracy;
+                    mostUsedDir = data.mostUsedDirection || mostUsedDir;
+                });
+
+                document.getElementById("sessions").innerText = sessions;
+                document.getElementById("highScore").innerText = highScore;
+                document.getElementById("accuracyVal").innerText = lastAccuracy + "%";
+                document.getElementById("mostUsedMoveVal").innerText = mostUsedDir;
+
+            } catch (e) {
+                console.error("Error fetching firebase stats", e);
+                // Fallback rendering
+                document.getElementById("sessions").innerText = localStorage.getItem("sessions") || 0;
+                document.getElementById("highScore").innerText = localStorage.getItem("highScore") || 0;
+                document.getElementById("accuracyVal").innerText = (localStorage.getItem("lastAccuracy") || 0) + "%";
+                document.getElementById("mostUsedMoveVal").innerText = localStorage.getItem("mostUsedDir") || "N/A";
+            }
+        }
+
+        fetchUserStats();
+
+        window.logout = function () {
+            localStorage.removeItem("loggedIn");
+            localStorage.removeItem("loggedInUser");
+            window.location.href = "main.html";
+        };
+    </script>
+
+</body>
+
+</html>

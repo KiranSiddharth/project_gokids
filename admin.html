@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | Therapic Kids</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 10vh auto;
+        }
+
+        .card-dark {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+        }
+
+        .form-control-dark {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+        }
+
+        .form-control-dark:focus {
+            background: #0f172a;
+            color: white;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25);
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #475569;
+        }
+
+        h3.stat-val {
+            color: #38bdf8;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .table-dark {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
+        .table-dark thead th {
+            border-bottom: 2px solid #334155;
+            color: #94a3b8;
+        }
+
+        .table-dark td,
+        .table-dark th {
+            border-color: #334155;
+            padding: 15px;
+        }
+
+        .sidebar {
+            background: #1e293b;
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            padding-top: 20px;
+            border-right: 1px solid #334155;
+        }
+
+        .sidebar a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 15px 25px;
+            display: block;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #0f172a;
+            color: #38bdf8;
+            border-left: 4px solid #38bdf8;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 40px;
+        }
+
+        .badge-active {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ADMIN LOGIN -->
+    <div id="adminLoginArea" class="container">
+        <div class="login-container">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-shield-halved text-info fa-3x mb-3"></i>
+                <h3 class="fw-bold text-white">Admin Secure Access</h3>
+            </div>
+            <div class="card card-dark p-4 shadow-lg">
+                <div class="mb-3">
+                    <label class="form-label text-secondary">Admin Email</label>
+                    <input type="email" id="adminEmail" class="form-control form-control-dark"
+                        value="admin@therapic.kids">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-secondary">Password</label>
+                    <input type="password" id="adminPassword" class="form-control form-control-dark" value="admin123">
+                </div>
+                <button class="btn btn-info w-100 fw-bold" onclick="loginAdmin()">Secure Login</button>
+                <p id="adminError" class="text-danger mt-3 text-center"></p>
+                <div class="text-center mt-3"><a href="main.html" class="text-secondary small">← Back to Site</a></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="adminDashboardArea" class="hidden">
+        <div class="sidebar">
+            <h4 class="text-center text-info fw-bold mb-4">Therapy Admin</h4>
+            <a href="#" id="navUsers" class="active" onclick="showTab('users')"><i class="fa-solid fa-users me-2"></i>
+                User Management</a>
+            <a href="#"><i class="fa-solid fa-chart-line me-2"></i> System Analytics</a>
+            <a href="#"><i class="fa-solid fa-gear me-2"></i> Settings</a>
+            <a href="#" class="text-danger mt-5" onclick="logoutAdmin()"><i
+                    class="fa-solid fa-right-from-bracket me-2"></i> Secure Logout</a>
+        </div>
+
+        <div class="main-content">
+            <div id="tabUsers">
+                <h2 class="mb-4 fw-bold">System Overview</h2>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="stat-box shadow-sm">
+                            <p class="text-secondary mb-0">Total Registered Parents</p>
+                            <h3 class="stat-val" id="totalUsers">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-box shadow-sm">
+                            <p class="text-secondary mb-0">Active Sessions Today</p>
+                            <h3 class="stat-val text-success">14</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-box shadow-sm">
+                            <p class="text-secondary mb-0">System Status</p>
+                            <h3 class="stat-val text-warning"><i class="fa-solid fa-check-circle me-2"></i>Optimal</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-dark shadow-sm">
+                    <div
+                        class="card-header border-bottom border-secondary p-4 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold">Recent Registered Logins & Details</h5>
+                        <button class="btn btn-sm btn-outline-info" onclick="loadUsers()"><i
+                                class="fa-solid fa-rotate-right"></i> Refresh</button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Parent Name</th>
+                                        <th>Email Address</th>
+                                        <th>Date of Birth</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userTableBody">
+                                    <!-- Users get dynamically loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="module">
+            import { db, collection, getDocs, updateDoc, doc, addDoc, query, where, serverTimestamp } from "./firebase-config.js";
+
+            window.checkAdminSession = function () {
+                if (sessionStorage.getItem("adminLoggedIn") === "true") {
+                    document.getElementById('adminLoginArea').classList.add('hidden');
+                    document.getElementById('adminDashboardArea').classList.remove('hidden');
+                    loadUsers();
+                }
+            }
+
+            window.loginAdmin = function () {
+                const email = document.getElementById('adminEmail').value;
+                const pass = document.getElementById('adminPassword').value;
+
+                // In production, admin accounts should also be authenticated through Firebase Auth
+                if (email === "admin@therapic.kids" && pass === "admin123") {
+                    sessionStorage.setItem("adminLoggedIn", "true");
+                    checkAdminSession();
+                } else {
+                    document.getElementById('adminError').innerText = "Access Denied: Invalid Credentials";
+                }
+            }
+
+            window.logoutAdmin = function () {
+                sessionStorage.removeItem("adminLoggedIn");
+                window.location.reload();
+            }
+
+            window.showTab = function (tabName) {
+                document.getElementById("tabUsers").classList.add("hidden");
+                document.getElementById("navUsers").classList.remove("active");
+
+                if (tabName === 'users') {
+                    document.getElementById("tabUsers").classList.remove("hidden");
+                    document.getElementById("navUsers").classList.add("active");
+                    loadUsers();
+                }
+            }
+
+            window.toggleSuspend = async function (id, currentStatus) {
+                if (!confirm(`Are you sure you want to change suspension status?`)) return;
+
+                try {
+                    const newStatus = currentStatus === "suspended" ? "active" : "suspended";
+                    await updateDoc(doc(db, "users", id), {
+                        status: newStatus
+                    });
+
+                    // If suspending, we can't instantly logout remote users without a snapshot listener on their main app,
+                    // but the next time they try to login, they will be blocked.
+                    loadUsers();
+                } catch (e) {
+                    console.error("Error updating user status", e);
+                    alert("Failed to update status.");
+                }
+            }
+
+            window.loadUsers = async function () {
+                const tbody = document.getElementById("userTableBody");
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-info py-4"><i class="fa-solid fa-spinner fa-spin"></i> Fetching users from Firebase...</td></tr>`;
+
+                try {
+                    const querySnapshot = await getDocs(collection(db, "users"));
+                    document.getElementById("totalUsers").innerText = querySnapshot.size;
+
+                    tbody.innerHTML = "";
+                    if (querySnapshot.empty) {
+                        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-secondary py-4">No registered users in the database.</td></tr>`;
+                        return;
+                    }
+
+                    querySnapshot.forEach(doc => {
+                        const u = doc.data();
+                        const id = doc.id;
+
+                        let statusBadge = u.status === "suspended" ?
+                            `<span class="badge bg-danger py-1 px-2 rounded-pill">Suspended</span>` :
+                            `<span class="badge badge-active py-1 px-2 rounded-pill">Active</span>`;
+
+                        let actionBtn = u.status === "suspended" ?
+                            `<button class="btn btn-sm btn-outline-success fw-bold" onclick="toggleSuspend('${id}', 'suspended')">Unsuspend</button>` :
+                            `<button class="btn btn-sm btn-outline-danger fw-bold" onclick="toggleSuspend('${id}', 'active')">Suspend & Log Out</button>`;
+
+                        let row = `<tr>
+                        <td class="fw-bold">${u.username}</td>
+                        <td class="text-secondary">${u.email}</td>
+                        <td class="text-secondary">${u.dob || 'Admin Created'}</td>
+                        <td>${statusBadge}</td>
+                        <td>${actionBtn}</td>
+                    </tr>`;
+                        tbody.innerHTML += row;
+                    });
+                } catch (e) {
+                    console.error(e);
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Failed to load users from Firebase. Connect DB.</td></tr>`;
+                }
+            }
+
+            checkAdminSession();
+        </script>
+</body>
+
+</html>
